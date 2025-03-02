@@ -24,6 +24,15 @@ jobs:
     - name: Build project
       run: npm run build
 
+    - name: Cleanup target directory
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: 22
+        script: rm -rf ${{ secrets.SERVER_TARGET }}/*
+
     - name: Deploy to server
       uses: appleboy/scp-action@master
       with:
@@ -31,5 +40,5 @@ jobs:
         username: ${{ secrets.SERVER_USER }}
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
-        source: "dist/*"
+        source: "dist/."
         target: ${{ secrets.SERVER_TARGET }}
